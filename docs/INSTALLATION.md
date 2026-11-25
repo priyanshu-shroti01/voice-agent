@@ -1,6 +1,6 @@
 # Installation
 
-This guide installs voice-agent on a Mac, starts it, and walks through first-time setup in the browser. It is written for developers and for small-business operators comfortable with the Terminal.
+This guide installs voice-agent on a Mac, starts it, and walks through first-time setup in the browser. It is written for developers and for small-business operators comfortable with the Terminal. To run it always-on on a public Linux server, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Contents
 

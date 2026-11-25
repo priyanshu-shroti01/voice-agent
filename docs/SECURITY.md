@@ -204,7 +204,7 @@ Real PSTN calling is disabled unless `VA_REAL_TELEPHONY_ENABLED=true`, an Asteri
 
 1. Turn on FileVault and use a strong macOS account password.
 2. Keep every service on `127.0.0.1`. Start Ollama with `OLLAMA_HOST=127.0.0.1` and run `./scripts/health-check.sh` to confirm.
-3. If you expose the dashboard (for example for customer links), put it behind your own HTTPS reverse proxy, then set `VA_COOKIE_SECURE=true`, `VA_ALLOWED_HOSTS` and `VA_CORS_ORIGINS` to your hostname, and `VA_ENV=production`.
+3. If you expose the dashboard (for example for customer links), put it behind your own HTTPS reverse proxy, then set `VA_COOKIE_SECURE=true`, `VA_ALLOWED_HOSTS` and `VA_CORS_ORIGINS` to your hostname, and `VA_ENV=production`. On a Linux server, `scripts/install-server.sh` does this ([DEPLOYMENT.md](DEPLOYMENT.md)).
 4. Leave `VA_ALLOW_REMOTE_LLM_MODELS`, `VA_ALLOW_REMOTE_PROVIDER_HOSTS`, `VA_PUBLIC_CALLS_ENABLED` and `VA_REAL_TELEPHONY_ENABLED` set to `false` unless you need them.
 5. Give people the lowest workspace role that works for them. Keep the number of instance administrators small.
 6. Use encrypted backups (`VA_BACKUP_PASSPHRASE`) and store the passphrase and `data/.secret_key` safely.
