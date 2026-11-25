@@ -23,7 +23,9 @@ check "Speech-to-text whisper-server :$WHISPER_PORT" 1 curl -fsS -m 5 "http://12
 check "Text-to-speech Piper :$PIPER_PORT" 1 curl -fsS -m 5 "http://127.0.0.1:$PIPER_PORT/voices"
 check "VAD model     data/models/vad/silero_vad.onnx" 1 test -f "$MODELS/vad/silero_vad.onnx"
 check "FFmpeg" 0 command -v ffmpeg
-if pid_alive scheduler; then ok "Scheduler     running (pid $(pid_of scheduler))"; else err "Scheduler     not running"; fail=$((fail + 1)); fi
+if pid_alive scheduler; then ok "Scheduler     running (pid $(pid_of scheduler))"
+elif systemctl is-active --quiet voice-agent-scheduler 2>/dev/null; then ok "Scheduler     running (systemd)"
+else err "Scheduler     not running"; fail=$((fail + 1)); fi
 echo "${C_DIM}• Telephony     simulator always available; real PSTN is ${VA_REAL_TELEPHONY_ENABLED:-false} (disabled unless configured)${C_END}"
 # Ollama must not listen on a public interface
 if lsof -nP -iTCP:11434 -sTCP:LISTEN 2>/dev/null | awk 'NR>1{print $9}' | grep -vqE '^(127\.0\.0\.1|\[::1\]|localhost):'; then

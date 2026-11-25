@@ -108,6 +108,7 @@ business workspace.
 
 `make setup-all`, `make setup`, `make ollama`, `make dev`, `make stop`, `make health`, `make test`, `make lint`, `make typecheck` and `make backup`
 wrap the same scripts. See [docs/INSTALLATION.md](docs/INSTALLATION.md) for details and `.env.example` for every setting.
+To run it always-on on a public Linux server, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ### Ollama and models
 
