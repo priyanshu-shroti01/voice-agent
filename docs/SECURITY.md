@@ -98,7 +98,7 @@ Implemented in `backend/app/core/security.py`, `backend/app/auth/router.py` and 
 
 * The LLM, STT and TTS all run on the machine: Ollama, whisper.cpp and Piper or macOS `say`. **There is no cloud fallback.** If a local provider is down, the call fails with an explicit error.
 * **Remote-model refusal.** Ollama can proxy some models to a remote host (for example `*:cloud` tags, or models with a `remote_host`). `OllamaProvider` marks these as not local and refuses them (`remote_model_refused`) unless `VA_ALLOW_REMOTE_LLM_MODELS=true`. The voice-session preflight checks this as well.
-* voice-agent never downloads LLMs and never runs `ollama pull`.
+* The application itself never downloads LLMs. Only the setup script runs `ollama pull`, and only with `--with-ollama` / `--ollama-only` after an explicit confirmation.
 
 ## LLM tool sandbox and prompt injection
 

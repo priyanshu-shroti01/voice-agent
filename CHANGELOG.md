@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+- `setup-mac.sh --with-ollama` (`make setup-all`) installs Ollama with Homebrew and pulls the default language
+  model, asking first and checking memory and free disk. `--ollama-only` (`make ollama`) runs just that step.
+  If Ollama isn't running, it is started temporarily on 127.0.0.1 for the download and stopped afterwards.
+
+### Fixed
+- Variables set on the command line now take precedence over `.env` in the shell scripts.
+- The setup script's model check no longer misreports an installed model when a pipe closes early.
+- Documented speech-model download size corrected to ~125 MB.
+
 ## [0.1.0] - 2026-11-25
 
 Initial release: a local-first AI voice-agent platform for macOS. Speech recognition, the language model and speech synthesis all run on the Mac.

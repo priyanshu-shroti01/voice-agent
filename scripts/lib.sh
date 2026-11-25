@@ -14,7 +14,8 @@ if [[ -f "$ROOT/.env" ]]; then
   while IFS='=' read -r key value; do
     [[ "$key" =~ ^[A-Z_][A-Z0-9_]*$ ]] || continue
     value="${value%\"}"; value="${value#\"}"
-    export "$key=$value"
+    # variables already set in the environment win over .env (same precedence as the backend)
+    [[ -n "${!key+x}" ]] || export "$key=$value"
   done < <(grep -E '^[A-Z_][A-Z0-9_]*=' "$ROOT/.env")
 fi
 

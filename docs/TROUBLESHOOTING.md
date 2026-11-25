@@ -30,14 +30,14 @@ curl -s http://127.0.0.1:11434/api/version      # should print a version
 OLLAMA_HOST=127.0.0.1 ollama serve              # start it, bound to localhost only
 ```
 
-`./scripts/start.sh` starts Ollama this way if it is installed and not already running. If you use the Ollama desktop app, make sure it is running. voice-agent never installs Ollama; get it from <https://ollama.com/download>.
+`./scripts/start.sh` starts Ollama this way if it is installed and not already running. If you use the Ollama desktop app, make sure it is running. If Ollama isn't installed, run `./scripts/setup-mac.sh --ollama-only` (it asks before installing anything), or get it from <https://ollama.com/download>.
 
 ### "Model '…' is not installed in Ollama" / `model_not_found`
 
 The agent (or the installation default) names a model that `ollama list` does not show. Either:
 
 * choose an installed model under **Settings → AI models** (installation default) or in the agent builder (per agent), or
-* install the model yourself, which is your decision since voice-agent never downloads models: `ollama pull qwen3:4b-instruct-2507-q4_K_M`.
+* install it: `./scripts/setup-mac.sh --ollama-only` (asks before downloading), or `ollama pull qwen3:4b-instruct-2507-q4_K_M`.
 
 Model names must match exactly, including the tag.
 

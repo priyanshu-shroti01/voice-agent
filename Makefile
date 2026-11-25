@@ -11,7 +11,7 @@ PY_SRC    := backend/app engine tests backend/tests
 # Source trees scanned for secrets (skips node_modules, .venv and the local data directory).
 SECRET_SCAN_PATHS := backend/app backend/tests engine tests scripts apps/dashboard/src apps/dashboard/e2e docs .github
 
-.PHONY: help setup setup-models dev start stop health backup build \
+.PHONY: help setup setup-models setup-all ollama dev start stop health backup build \
         test test-backend test-frontend test-real test-e2e \
         lint lint-backend lint-frontend typecheck typecheck-backend typecheck-frontend \
         migrations-check security format
@@ -24,8 +24,14 @@ help: ## Show this help
 setup: ## Install system deps, backend venv and dashboard packages
 	./scripts/setup-mac.sh
 
-setup-models: ## Same as setup, plus download the local AI models
+setup-models: ## Same as setup, plus download the speech models (~125 MB, asks first)
 	./scripts/setup-mac.sh --models
+
+setup-all: ## Everything: tools, speech models, Ollama and the default LLM (~2.5 GB, asks first)
+	./scripts/setup-mac.sh --models --with-ollama
+
+ollama: ## Only install Ollama and pull the default LLM (asks first)
+	./scripts/setup-mac.sh --ollama-only
 
 dev: ## Start all services with hot reload
 	./scripts/start.sh --dev

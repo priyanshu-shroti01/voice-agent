@@ -85,15 +85,16 @@ about 0.1 s.
 
 - An Apple Silicon Mac (M1 or newer). 16 GB memory recommended. Intel Macs work without Metal acceleration.
 - macOS with [Homebrew](https://brew.sh), Node.js 20+, [uv](https://docs.astral.sh/uv/)
-- [Ollama](https://ollama.com/download) installed and at least one local model (`ollama list`). voice-agent never
-  installs Ollama or downloads models for you.
-- About 1 GB of free disk for dependencies and speech models.
+- [Ollama](https://ollama.com/download) and a local model. The setup script can install both for you
+  (`--with-ollama`, which asks first), or use what you already have (`ollama list`).
+- About 1 GB of free disk for dependencies and speech models, plus about 2.5 GB for the default language model.
 
 ## Install and run
 
 ```bash
-git clone <your fork url> voice-agent && cd voice-agent
-./scripts/setup-mac.sh --models   # installs only what's missing; asks before downloading ~140 MB of speech models
+git clone https://github.com/priyanshu-shroti01/voice-agent.git && cd voice-agent
+./scripts/setup-mac.sh --models --with-ollama   # everything: tools, speech models (~125 MB), Ollama + default LLM (~2.5 GB)
+                                                # installs only what's missing and asks before every download
 ./scripts/start.sh                # Ollama (if not running), whisper-server, Piper, API, scheduler, dashboard
 ./scripts/health-check.sh         # verifies every component
 ```
@@ -105,7 +106,7 @@ business workspace.
 ./scripts/stop.sh                 # stops only the processes voice-agent started
 ```
 
-`make setup`, `make dev`, `make stop`, `make health`, `make test`, `make lint`, `make typecheck` and `make backup`
+`make setup-all`, `make setup`, `make ollama`, `make dev`, `make stop`, `make health`, `make test`, `make lint`, `make typecheck` and `make backup`
 wrap the same scripts. See [docs/INSTALLATION.md](docs/INSTALLATION.md) for details and `.env.example` for every setting.
 
 ### Ollama and models

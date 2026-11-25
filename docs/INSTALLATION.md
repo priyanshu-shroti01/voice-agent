@@ -24,32 +24,45 @@ This guide installs voice-agent on a Mac, starts it, and walks through first-tim
 | Requirement | Notes |
 |---|---|
 | **Apple Silicon Mac** (M1 or newer) | 16 GB memory recommended. Intel Macs work, but whisper.cpp then has no Metal acceleration. The scripts target macOS only. |
-| **[Homebrew](https://brew.sh)** | Required. The setup script uses it to install anything missing: `ffmpeg`, `whisper-cpp`, `uv`, `node`. |
+| **[Homebrew](https://brew.sh)** | Required, and the only thing you must install yourself. The setup script uses it to install anything missing: `ffmpeg`, `whisper-cpp`, `uv`, `node`, and (with `--with-ollama`) `ollama`. |
 | **Node.js 20 or newer** | The setup script stops if Node is older than 20. The project uses **npm**, not pnpm. |
 | **[uv](https://docs.astral.sh/uv/)** | Creates the Python 3.12 environments. Python 3.14 is not supported, because aiortc, onnxruntime and PyAV wheels are needed. The backend requires Python ≥ 3.11 and < 3.14, and the script uses 3.12. |
-| **[Ollama](https://ollama.com/download)**, installed by you | voice-agent **never installs Ollama and never downloads language models.** Install Ollama yourself and pull at least one local model you are happy to use (for example `ollama pull qwen3:4b-instruct-2507-q4_K_M`). `ollama list` shows what is installed. |
-| Disk space | About 1 GB for dependencies plus about 140 MB for the default speech models, plus the size of your Ollama model(s). |
+| **[Ollama](https://ollama.com/download)** and a local model | Either let the setup script do it (`--with-ollama`, which asks before installing Ollama and before downloading the model), or install Ollama yourself and pull a model, for example `ollama pull qwen3:4b-instruct-2507-q4_K_M`. Without that flag the script never installs Ollama or downloads a language model. `ollama list` shows what is installed. |
+| Disk space | About 1 GB for dependencies plus about 125 MB for the default speech models, plus the size of your Ollama model(s) (about 2.5 GB for the default). |
 
 ## 1. Get the code
 
 ```bash
-git clone <repository url> voice-agent
+git clone https://github.com/priyanshu-shroti01/voice-agent.git
 cd voice-agent
 ```
 
 ## 2. Run the setup script
 
+**One command for everything** (tools, environments, database, speech models, Ollama and the default language model):
+
 ```bash
-./scripts/setup-mac.sh            # dependencies, environments, database
-./scripts/setup-mac.sh --models   # the same, and also offers to download the speech models
-./scripts/setup-mac.sh --models --yes   # non-interactive: download without asking
+./scripts/setup-mac.sh --models --with-ollama     # or: make setup-all
 ```
+
+Other variants:
+
+```bash
+./scripts/setup-mac.sh                            # tools, environments, database only
+./scripts/setup-mac.sh --models                   # + speech models (~125 MB)
+./scripts/setup-mac.sh --ollama-only              # only Ollama + the language model   (make ollama)
+./scripts/setup-mac.sh --models --with-ollama --yes   # non-interactive: answer yes to every question
+VA_DEFAULT_LLM_MODEL=llama3.2:3b ./scripts/setup-mac.sh --ollama-only   # choose a different model
+./scripts/setup-mac.sh --help
+```
+
+Every download and installation is announced first, with its size, and needs a "y" unless you pass `--yes`.
 
 The script installs only what is missing and can be run again safely. It:
 
 1. Checks the platform, memory and free disk space.
 2. Installs any missing Homebrew packages (`ffmpeg`, `whisper-cpp`, `uv`, `node`) and checks Node ≥ 20.
-3. Reports whether Ollama is installed. It never installs or reinstalls it.
+3. Creates the folders, `.env` and environments described below.
 4. Creates `data/` and its subdirectories with owner-only permissions (`0700`). It copies `.env.example` to `.env` (mode `0600`) if `.env` does not exist.
 5. Creates the backend environment `backend/.venv` with Python 3.12 (`uv sync`).
 6. Installs **Piper TTS 1.8.0 (GPL-3.0)** into its own environment, `.tools/piper`. voice-agent never imports Piper; it runs as a separate process (see [MODEL-LICENSING.md](MODEL-LICENSING.md)).
@@ -59,7 +72,13 @@ The script installs only what is missing and can be run again safely. It:
    * `ggml-base.en-q5_1.bin` from the `ggerganov/whisper.cpp` Hugging Face repository (about 57 MB, MIT)
    * Piper voice `en_GB-alba-medium` (`.onnx`, `.onnx.json` and its `MODEL_CARD`) from `rhasspy/piper-voices` (about 60 MB, CC BY 4.0)
    * `silero_vad.onnx` from the `snakers4/silero-vad` GitHub repository (about 2 MB, MIT)
-10. Checks whether Ollama is running and whether the default model (`VA_DEFAULT_LLM_MODEL`) is installed. It only prints advice and does not download anything.
+10. **Ollama and the language model.**
+    * Without `--with-ollama`: only checks whether Ollama is installed and running and whether the default model (`VA_DEFAULT_LLM_MODEL`) is present, then prints advice. Nothing is installed or downloaded.
+    * With `--with-ollama` (or `--ollama-only`):
+      1. If Ollama is missing, asks, then runs `brew install ollama`.
+      2. If Ollama is not running, starts it **temporarily on 127.0.0.1:11434** for the download and stops it afterwards. `start.sh` manages it from then on.
+      3. If the model is missing, shows its size and checks this Mac's memory and free disk (warning below 8 GB of memory or 6 GB of disk). It then asks, and runs `ollama pull <model>`.
+      4. An already installed Ollama or model is left untouched; nothing is reinstalled or downloaded again.
 
 Without `--models`, the script lists the missing speech models and tells you how to fetch them.
 

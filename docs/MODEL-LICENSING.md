@@ -14,7 +14,7 @@ No model weights are committed to the repository (`*.bin`, `*.onnx` and `*.gguf`
 | `data/models/piper/en_US-libritts_r-medium.onnx`, `.onnx.json`, `.MODEL_CARD` | `huggingface.co/rhasspy/piper-voices` |
 | `data/models/vad/silero_vad.onnx` | `github.com/snakers4/silero-vad` |
 
-Optional models (the `small.en` Whisper model and the `en_GB-alba-medium` voice) are not downloaded by the script; you fetch them yourself from the same repositories. voice-agent **never downloads language models**. You install them with Ollama yourself.
+Optional models (the `small.en` Whisper model and the `en_US-libritts_r-medium` voice) are not downloaded by the script; you fetch them yourself from the same repositories. Language models are downloaded only through Ollama: either by you (`ollama pull`) or by `setup-mac.sh --with-ollama` / `--ollama-only`, which asks before pulling. The weights stay in Ollama's own store (`~/.ollama`) and are never copied into this repository.
 
 ## Speech and language models
 
@@ -72,7 +72,7 @@ If the GPL is a problem for you, select **macOS `say`** as the TTS provider (**S
 | Component | Licence | How it is used |
 |---|---|---|
 | whisper.cpp (`whisper-server`, `whisper-cli`) | MIT | Installed with Homebrew (`whisper-cpp`) and run as a separate local server |
-| Ollama | MIT | Installed by you and run as a separate local server. voice-agent never installs it. |
+| Ollama | MIT | Installed by you, or by `setup-mac.sh --with-ollama` via Homebrew after asking. It runs as a separate local server bound to 127.0.0.1. |
 | Piper TTS | GPL-3.0-or-later | Separate process; see above |
 | FFmpeg (Homebrew) | LGPL/GPL depending on build | Installed by the setup script as a general utility. voice-agent's code does not call the `ffmpeg` binary. |
 | Asterisk (optional, yours) | GPL-2.0 | Not included. voice-agent only talks to it over the ARI HTTP/WebSocket API. |
